@@ -1,0 +1,12 @@
+---
+all:
+  children:
+    vps:
+      children:
+        k8s:
+          children:
+            master:
+              hosts:
+                tapu-bulu:
+      hosts:
+        tapu-bulu:
