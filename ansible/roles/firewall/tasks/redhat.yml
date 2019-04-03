@@ -1,0 +1,29 @@
+---
+- name: Install firewalld
+  become: true
+  yum:
+    name: firewalld
+    state: present
+
+- name: Allow connections over specified ports
+  become: true
+  firewalld:
+    port: "{{ item }}"
+    state: enabled
+    permanent: true
+  loop: "{{ firewalld_allowed_ports }}"
+
+- name: Allow connections to specified services
+  become: true
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    permanent: true
+  loop: "{{ firewalld_allowed_services }}"
+
+- name: Enable firewalld
+  become: true
+  service:
+    name: firewalld
+    state: restarted
+    enabled: true
