@@ -8,19 +8,19 @@
 - name: Allow connections over specified ports
   become: true
   firewalld:
-    port: "{{ item }}"
+    port: "{{ item.value }}"
     state: enabled
     permanent: true
-  loop: "{{ firewalld_allowed_ports }}"
+  loop: "{{ firewalld_allowed_ports | dict2items }}"
   notify: Reload firewalld
 
 - name: Allow connections to specified services
   become: true
   firewalld:
-    service: "{{ item }}"
+    service: "{{ item.value }}"
     state: enabled
     permanent: true
-  loop: "{{ firewalld_allowed_services }}"
+  loop: "{{ firewalld_allowed_services | dict2items }}"
   notify: Reload firewalld
 
 - name: Enable firewalld
