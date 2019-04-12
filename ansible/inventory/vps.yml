@@ -5,7 +5,7 @@ all:
       children:
         k8s:
           children:
-            master:
+            k8s-master:
               hosts:
                 tapu-bulu:
       hosts:
