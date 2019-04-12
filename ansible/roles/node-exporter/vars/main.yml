@@ -1,4 +1,0 @@
----
-firewalld_allowed_ports:
-  - "{{ node_exporter_port }}/tcp"
-node_exporter_port: 9100
