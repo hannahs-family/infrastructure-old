@@ -12,6 +12,7 @@
     state: enabled
     permanent: true
   loop: "{{ firewalld_allowed_ports }}"
+  notify: Reload firewalld
 
 - name: Allow connections to specified services
   become: true
@@ -20,10 +21,11 @@
     state: enabled
     permanent: true
   loop: "{{ firewalld_allowed_services }}"
+  notify: Reload firewalld
 
 - name: Enable firewalld
   become: true
   service:
     name: firewalld
-    state: restarted
+    state: started
     enabled: true
