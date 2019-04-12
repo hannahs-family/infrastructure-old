@@ -8,5 +8,3 @@ all:
             k8s-master:
               hosts:
                 tapu-bulu:
-      hosts:
-        tapu-bulu:
