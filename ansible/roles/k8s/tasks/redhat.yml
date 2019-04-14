@@ -18,3 +18,8 @@
   command: /bin/firewall-cmd --permanent --direct --add-rule ipv4 filter FORWARD 1
            -o flannel.1 -j ACCEPT -m comment --comment "flannel subnet"
   ignore_errors: true
+
+- name: Reload firewalld
+  service:
+    name: firewalld
+    state: reloaded
