@@ -2,3 +2,5 @@
 firewalld_allowed_ports:
   k8s_node_8472: 8472/udp
   k8s_node_10250: 10250/tcp
+kubernetes_version: "1.14"
+kubernetes_version_rhel_package: "1.14.1"
