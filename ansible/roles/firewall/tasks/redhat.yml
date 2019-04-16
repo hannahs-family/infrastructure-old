@@ -23,6 +23,29 @@
   loop: "{{ firewalld_allowed_services | dict2items }}"
   notify: Reload firewalld
 
+- name: Get initial checksum of firewalld direct.xml
+  become: true
+  stat:
+    path: /etc/firewalld/direct.xml
+    get_checksum: true
+  register: direct_checksum_before
+
+- name: Apply firewalld direct rules
+  become: true
+  command: firewall-cmd --permanent --direct {{ item.value }} -m comment
+           --comment {{ item.key }}
+  loop: "{{ firewalld_direct_rules | dict2items }}"
+  changed_when: false
+
+- name: Get final checksum of firewalld direct.xml
+  become: true
+  stat:
+    path: /etc/firewalld/direct.xml
+    get_checksum: true
+  register: direct_checksum_after
+  changed_when: "(not direct_checksum_before.stat.exists) or (direct_checksum_before.stat.checksum != direct_checksum_after.stat.checksum)"
+  notify: Reload firewalld
+
 - name: Enable firewalld
   become: true
   service:

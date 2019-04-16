@@ -2,5 +2,8 @@
 firewalld_allowed_ports:
   k8s_node_8472: 8472/udp
   k8s_node_10250: 10250/tcp
+firewalld_direct_rules:
+  flanneld_subnet: --add-rule ipv4 filter FORWARD 1 -i flannel.1 -j ACCEPT
+  flanneld_dnat: --add-rule ipv4 filter FORWARD 1 -o flannel.1 -j ACCEPT
 kubernetes_version: "1.14"
 kubernetes_version_rhel_package: "1.14.1"

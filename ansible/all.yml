@@ -6,7 +6,6 @@
     - cloudalchemy.node-exporter
 
 - hosts: k8s
-  become: true
   roles:
     - geerlingguy.docker
-    - k8s
+    - geerlingguy.kubernetes
