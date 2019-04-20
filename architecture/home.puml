@@ -1,0 +1,106 @@
+@startuml
+!include <office/Devices/device_mac_client>
+!include <office/Devices/router>
+!include <office/Devices/switch>
+!include <office/Devices/workstation>
+!include <office/Servers/file_server>
+!include <tupadr3/devicons/raspberry_pi>
+!include <tupadr3/font-awesome-5/wifi>
+
+!define CLOUD(n_name,n_sprite) cloud "n_name \n <$n_sprite>" as n_name
+!define NODE(n_name,n_sprite) node "n_name \n <$n_sprite>" as n_name
+!define NODE(n_name,n_sprite,n_ip) node "n_name \n <$n_sprite>" as n_name <<n_ip>>
+
+skinparam DefaultTextAlignment center
+
+title Home
+
+cloud Internet
+
+NODE(Arceus, router, 192.168.0.1)
+
+package Guests <<192.168.1.0/24>> {
+    CLOUD(Palkia, wifi) {
+        rectangle {
+            node Butterfree
+            node Venomoth
+            node Masquerain
+        }
+    }
+}
+
+package Infrastructure <<192.168.16.0/24>> {
+    package Switches <<192.168.16.0/28>> {
+        NODE(Magnezone, switch, 192.168.16.1)
+        NODE(Magneton, switch, 192.168.16.2)
+        NODE(Bulbasaur, switch, 192.168.16.3)
+        NODE(Turtwig, switch, 192.168.16.4)
+    }
+
+    cloud "Access Points" <<192.168.16.16/28>> {
+        rectangle {
+            NODE(Woobat, switch, 192.168.16.17)
+            NODE(Zubat, switch, 192.168.16.18)
+        }
+    }
+
+    package Servers <<192.168.16.32/28>> {
+        NODE(Rotom, file_server, 192.168.16.33)
+    }
+
+    package Kubernetes <<192.168.16.48/28>> {
+        NODE(Bounsweet, raspberry_pi, 192.168.16.49)
+        NODE(Cherrim, raspberry_pi, 192.168.16.50)
+        NODE(Fomantis, raspberry_pi, 192.168.16.51)
+        NODE(Petilil, raspberry_pi, 192.168.16.52)
+        NODE(Shroomish, raspberry_pi, 192.168.16.53)
+    }
+}
+
+package Family <<192.168.17.0/24>> {
+    NODE(Darkrai, workstation)
+    NODE(Greninja, device_mac_client)
+    NODE(Litten, raspberry_pi)
+
+    CLOUD(Dialga, wifi) {
+        rectangle {
+            node Rowlet
+            node Vulpix
+        }
+    }
+}
+
+Arceus "1" =left= Internet
+Arceus "2" =down= "1" Magnezone
+
+Magnezone "2" == Darkrai
+Magnezone "3" == Greninja
+Magnezone "4" == "1" Bulbasaur
+Magnezone "5" == "1" Turtwig
+Magnezone "7" == Woobat : ⚡️
+Magnezone "8" == "1" Magneton : ⚡️
+
+Magneton "2" == Bounsweet
+Magneton "3" == Cherrim
+Magneton "4" == Fomantis
+Magneton "5" == Petilil
+Magneton "6" == Shroomish
+Magneton "7" =left= Rotom
+Magneton "8" == Zubat : ⚡️
+
+Bulbasaur "2" == Litten
+
+Woobat -- Dialga
+Woobat -- Palkia
+Zubat -- Dialga
+Zubat -- Palkia
+
+Bounsweet -[hidden]left- Cherrim
+Cherrim   -[hidden]left- Fomantis
+Fomantis  -[hidden]left- Petilil
+Petilil   -[hidden]left- Shroomish
+
+Butterfree -[hidden]right- Venomoth
+Venomoth -[hidden]right- Masquerain
+
+@enduml
