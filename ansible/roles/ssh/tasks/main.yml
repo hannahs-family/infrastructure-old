@@ -1,0 +1,20 @@
+---
+- name: Create temporary directory
+  tempfile:
+    state: directory
+  register: tempdir
+
+- name: Copy encrypted SSH key
+  copy:
+    decrypt: false
+    src: ansible.id_rsa
+    dest: "{{ tempdir.path }}"
+  register: keyfile
+
+- name: Load SSH key into ssh-agent
+  shell: ansible-vault --vault-id=.ansible-password view {{ keyfile.dest }} | ssh-add -
+
+- name: Remove temporary directory
+  file:
+    path: "{{ tempdir.path }}"
+    state: absent

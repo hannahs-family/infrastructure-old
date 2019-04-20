@@ -1,4 +1,5 @@
 ---
+ansible_user: ansible
 firewalld_allowed_ports:
   node_exporter: "{{ node_exporter_port }}/tcp"
 node_exporter_port: 9100
