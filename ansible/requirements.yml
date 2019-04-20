@@ -1,4 +1,5 @@
 ---
+- src: andrewrothstein.kubernetes-helm
 - src: cloudalchemy.node-exporter
 - src: geerlingguy.docker
 - src: geerlingguy.kubernetes

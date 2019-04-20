@@ -1,0 +1,11 @@
+# For Tiller and Helm:
+# - Generate private key on remote
+# - Generate CSR on remote
+# - Copy CSR to local
+# - Use vaulted CA key to sign cert
+# - Concatenate CA cert to signed cert
+# - Copy concatenated cert to remote
+# - Install Tiller and Helm certificates
+# - Install Tiller RBAC
+# - Install Tiller with TLS
+---
