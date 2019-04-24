@@ -1,0 +1,30 @@
+---
+- name: Install EPEL
+  become: true
+  package:
+    name: epel-release
+    state: present
+  when: ansible_facts["os_family"] == "RedHat"
+
+- name: Install fail2ban
+  become: true
+  package:
+    name: fail2ban
+    state: present
+
+- name: Enable sshd fail2ban jail
+  become: true
+  copy:
+    src: fail2ban/10-sshd.conf
+    dest: /etc/fail2ban/jail.d/
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reload fail2ban
+
+- name: Start fail2ban
+  become: true
+  service:
+    name: fail2ban
+    state: started
+    enabled: true

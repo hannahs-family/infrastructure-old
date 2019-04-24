@@ -4,3 +4,9 @@
   service:
     name: firewalld
     state: reloaded
+
+- name: Reload fail2ban
+  become: true
+  service:
+    name: fail2ban
+    state: reloaded
