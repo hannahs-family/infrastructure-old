@@ -1,0 +1,40 @@
+---
+- name: Create ansible remote user
+  become: true
+  user:
+    name: ansible
+    password: "{{ lookup('password', '/tmp/password chars=ascii_letters,digits,punctuation length=64') | password_hash('sha512') }}"
+    update_password: on_create
+  register: user
+
+- name: Lock ansible remote user's password
+  become: true
+  user:
+    name: ansible
+    password_lock: true
+
+- name: Create ansible remote user .ssh directory
+  file:
+    path: "{{ user.home }}/.ssh"
+    state: directory
+    owner: ansible
+    group: ansible
+    mode: 01700
+
+- name: Copy ansible remote user SSH public key
+  copy:
+    src: ansible.id_rsa.pub
+    dest: "{{ user.home }}/.ssh/authorized_keys"
+    owner: ansible
+    group: ansible
+    mode: 0644
+
+- name: Add ansible remote user sudoers configuration
+  become: true
+  copy:
+    src: sudoers.d/00-ansible
+    dest: /etc/sudoers.d/
+    owner: root
+    group: root
+    mode: 0440
+    validate: /usr/sbin/visudo -cf %s
