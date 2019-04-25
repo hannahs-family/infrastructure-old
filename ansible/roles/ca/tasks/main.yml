@@ -1,6 +1,10 @@
 ---
-- include_tasks: redhat.yml
-  when: ansible_facts["os_family"] == "RedHat"
-
-- include_tasks: suse.yml
-  when: ansible_facts["os_family"] == "Suse"
+- name: Copy root CA certificate
+  become: true
+  copy:
+    src: ca.cert.pem
+    dest: "{{ ca_certs_path }}/hannahs.family.ca.cert.pem"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Update certificate store

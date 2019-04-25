@@ -7,10 +7,15 @@
 
 - hosts: all
   roles:
+    - group_by
     - user
     - ca
-    - firewall
     - cloudalchemy.node-exporter
+    - fail2ban
+
+- hosts: os_family_RedHat:os_family_Suse
+  roles:
+    - firewalld
 
 - hosts: k8s
   become: true

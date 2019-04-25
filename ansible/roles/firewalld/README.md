@@ -1,4 +1,4 @@
-# firewall
+# firewalld
 
 Enables and configures the system firewall and security:
 

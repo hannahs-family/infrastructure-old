@@ -15,7 +15,7 @@
 - name: Enable sshd fail2ban jail
   become: true
   copy:
-    src: fail2ban/10-sshd.conf
+    src: 10-sshd.conf
     dest: /etc/fail2ban/jail.d/
     owner: root
     group: root
