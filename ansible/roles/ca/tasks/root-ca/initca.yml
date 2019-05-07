@@ -1,0 +1,15 @@
+---
+- name: Generate root CA private key and certificate
+  shell: |
+    cfssl genkey -initca roles/ca/files/root-ca/csr.json | \
+    cfssljson -bare roles/ca/files/root-ca/root
+
+- name: Encrypt newly-generated root CA private key
+  command: |
+    ansible-vault encrypt --vault-id=.ansible-password \
+    roles/ca/files/root-ca/root-key.pem
+
+- name: Rename encrypted CA private key
+  command: |
+    mv roles/ca/files/root-ca/root-key.pem \
+    roles/ca/files/root-ca/root-key.pem.enc

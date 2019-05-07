@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 ansible = "*"
 passlib = "*"
+jmespath = "*"
 
 [requires]
 python_version = "3.7"

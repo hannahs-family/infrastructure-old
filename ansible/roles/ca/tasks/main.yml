@@ -1,8 +1,15 @@
 ---
+- name: Generate or renew root CA certificate
+  include_tasks:
+    file: root-ca/main.yml
+    apply:
+      delegate_to: localhost
+      run_once: true
+
 - name: Copy root CA certificate
   become: true
   copy:
-    src: ca.cert.pem
+    src: root-ca/root.pem
     dest: "{{ ca_certs_path }}/hannahs.family.ca.cert.pem"
     owner: root
     group: root

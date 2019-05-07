@@ -108,3 +108,5 @@ venv.bak/
 
 .ansible-password
 architecture/*.png
+*.csr
+*-key.pem

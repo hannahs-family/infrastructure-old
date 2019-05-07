@@ -1,0 +1,16 @@
+---
+- name: Get root CA certificate info
+  command: cfssl certinfo -cert roles/ca/files/root-ca/root.pem
+  register: root_certinfo
+  changed_when: false
+
+- name: Renew root CA certificate if it expires in < 30 days
+  when: ((ansible_date_time['iso8601'] |
+    to_datetime('%Y-%m-%dT%H:%M:%SZ')) - (root_certinfo.stdout | from_json |
+    json_query('not_after') |
+    to_datetime('%Y-%m-%dT%H:%M:%SZ'))).total_seconds() > -2592000
+  shell: |
+    CA_KEY=$(ansible-vault --vault-id=.ansible-password view \
+    roles/ca/files/root-ca/root-key.pem.enc) cfssl gencert -renewca -ca \
+    roles/ca/files/root-ca/root.pem -ca-key env:CA_KEY | cfssljson -bare \
+    roles/ca/files/root-ca/root

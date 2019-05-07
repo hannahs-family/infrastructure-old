@@ -1,0 +1,21 @@
+---
+- name: Look for existing root CA certificate
+  stat:
+    path: roles/ca/files/root-ca/root.pem
+  register: root_cert
+
+- name: Generate root CA key and certificate
+  when: not root_cert.stat.exists
+  include_tasks:
+    file: initca.yml
+    apply:
+      delegate_to: localhost
+      run_once: true
+
+- name: Renew root CA certificate if necessary
+  when: root_cert.stat.exists
+  include_tasks:
+    file: renewca.yml
+    apply:
+      delegate_to: localhost
+      run_once: true
