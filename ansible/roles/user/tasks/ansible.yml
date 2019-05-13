@@ -20,6 +20,7 @@
     password_lock: true
 
 - name: Create ansible remote user .ssh directory
+  become: true
   file:
     path: "{{ user.home }}/.ssh"
     state: directory
@@ -28,6 +29,7 @@
     mode: 01700
 
 - name: Copy ansible remote user SSH public key
+  become: true
   copy:
     src: ansible.id_rsa.pub
     dest: "{{ user.home }}/.ssh/authorized_keys"
