@@ -17,7 +17,13 @@
   roles:
     - firewalld
 
-- hosts: k8s
+- hosts: home:&k8s
+  become: true
+  roles:
+    - geerlingguy.docker
+    - geerlingguy.kubernetes
+
+- hosts: vps:&k8s
   become: true
   roles:
     - geerlingguy.docker
