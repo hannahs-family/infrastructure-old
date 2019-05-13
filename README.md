@@ -33,18 +33,24 @@
 Given a new host `new_host` at `192.168.1.1` and accessible over SSH as `root`:
 
 1.  Add the new host to the correct group(s) in the appropriate inventory file
-    under `ansible/inventory/`.
-
-2.  Create a file for the new host in `ansible/inventory/host_vars/`:
+    with an `ansible_host` property:
 
     ```yml
-    ---
-    ansible_host: 192.168.1.1
+    new_host:
+      ansible_host: 192.168.1.1
     ```
+
+2.  Install `sshpass`:
+
+        brew install https://raw.githubusercontent.com/hannah-family/infrastructure/master/Library/Formula/sshpass.rb
 
 3.  Run the `bootstrap` playbook against the new host:
 
-        ansible-playbook -k -i new_host ansible/bootstrap.yml
+        ansible-playbook -k --limit=new_host ansible/bootstrap.yml
+
+    If you haven't yet manually connected to this host over SSH, `sshpass` will
+    complain about host key checking being enabled. Fix this by prepending
+    `ANSIBLE_HOST_KEY_CHECKING=false` to the `ansible-playbook` command.
 
 ### Applying Playbooks
 
