@@ -5,7 +5,9 @@
     path: /etc/ssh/sshd_config
     regexp: '^#?PermitRootLogin'
     line: PermitRootLogin no
-  notify: Reload sshd
+  notify:
+    - Randomize root password
+    - Reload sshd
 
 - name: Disable password-authenticated SSH logins
   become: true

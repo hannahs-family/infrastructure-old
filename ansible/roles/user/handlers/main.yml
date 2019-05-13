@@ -1,4 +1,10 @@
 ---
+- name: Randomize root password
+  become: true
+  user:
+    name: root
+    password: "{{ lookup('password', '/tmp/password chars=ascii_letters,digits,punctuation length=64') | password_hash('sha512') }}"
+
 - name: Reload sshd
   become: true
   service:
