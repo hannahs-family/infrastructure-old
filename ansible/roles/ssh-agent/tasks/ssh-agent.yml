@@ -3,6 +3,7 @@
   tempfile:
     state: directory
   register: tempdir
+  changed_when: false
 
 - name: Copy encrypted SSH key
   copy:
@@ -10,11 +11,14 @@
     src: ansible.id_rsa
     dest: "{{ tempdir.path }}"
   register: keyfile
+  changed_when: false
 
 - name: Load SSH key into ssh-agent
   shell: ansible-vault --vault-id=.ansible-password view {{ keyfile.dest }} | ssh-add -
+  changed_when: false
 
 - name: Remove temporary directory
   file:
     path: "{{ tempdir.path }}"
     state: absent
+  changed_when: false

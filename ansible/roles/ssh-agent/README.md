@@ -1,4 +1,4 @@
-# ssh
+# ssh-agent
 
 Configures the local machine to connect to hosts in the inventory:
 

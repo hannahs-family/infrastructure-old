@@ -1,0 +1,7 @@
+---
+- name: Load ssh key into ssh-agent
+  include_tasks:
+    file: ssh-agent.yml
+    apply:
+      delegate_to: localhost
+      run_once: true
