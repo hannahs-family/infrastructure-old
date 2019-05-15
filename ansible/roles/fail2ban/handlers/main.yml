@@ -1,6 +1,6 @@
 ---
-- name: Reload firewalld
+- name: Reload fail2ban
   become: true
   service:
-    name: firewalld
+    name: fail2ban
     state: reloaded
