@@ -1,4 +1,5 @@
 ---
-- src: cloudalchemy.node-exporter
+- src: https://github.com/cloudalchemy/ansible-node-exporter
+  name: cloudalchemy.node-exporter
 - src: geerlingguy.docker
 - src: geerlingguy.kubernetes
