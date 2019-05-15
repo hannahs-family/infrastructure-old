@@ -1,3 +1,4 @@
 ---
+ansible_python_interpreter: /usr/bin/python
 ca_certs_path: /etc/pki/tls/certs
 ca_certs_update_command: update-ca-trust
