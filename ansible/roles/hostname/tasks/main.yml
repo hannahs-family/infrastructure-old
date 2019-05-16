@@ -21,11 +21,35 @@
     mode: 0644
   notify: Reboot
 
-- name: Set hostname entry in /etc/hosts
+- name: Set IPv4 hostname entry in /etc/hosts
   become: true
   lineinfile:
     path: /etc/hosts
     regexp: '^(127\.0\.0\.1.+)$'
     line: '\1 {{ inventory_hostname }}'
     backrefs: true
+  notify: Reboot
+
+- name: Set IPv6 hostname entry in /etc/hosts
+  become: true
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^(::1.+)$'
+    line: '\1 {{ inventory_hostname }}'
+    backrefs: true
+  notify: Reboot
+
+- name: Test for cloud-init config file
+  stat:
+    path: /etc/cloud/cloud.cfg
+  register: cloud_init
+
+- name: Persist hostname in cloud-init across reboots
+  become: true
+  template:
+    src: etc/cloud/cloud.cfg.d/99_hostname.cfg.j2
+    dest: /etc/cloud/cloud.cfg.d/99_hostname.cfg
+    owner: root
+    group: root
+    mode: 0644
   notify: Reboot
