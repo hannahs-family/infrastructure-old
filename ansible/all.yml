@@ -7,10 +7,13 @@
 - hosts: all
   roles:
     - group_by
+    - hostname
     - user
     - ca
     - cloudalchemy.node-exporter
     - fail2ban
+  handlers:
+    - include: handlers/main.yml
 
 - hosts: os_family_RedHat:os_family_Suse
   roles:

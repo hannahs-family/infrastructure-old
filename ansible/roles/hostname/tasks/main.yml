@@ -1,0 +1,31 @@
+---
+# TODO: hostname module is currently broken on openSUSE
+# - name: Set hostname
+#   become: true
+#   hostname:
+#     name: "{{ inventory_hostname }}.{{ hostname_domain }}"
+
+- name: Set hostname with hostnamectl
+  become: true
+  command: hostnamectl set-hostname {{ inventory_hostname }}.{{ hostname_domain }}
+  when: ansible_facts["fqdn"] != inventory_hostname + "." + hostname_domain
+  notify: Reboot
+
+- name: Set contents of /etc/hostname
+  become: true
+  template:
+    src: etc/hostname.j2
+    dest: /etc/hostname
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reboot
+
+- name: Set hostname entry in /etc/hosts
+  become: true
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^(127\.0\.0\.1.+)$'
+    line: '\1 {{ inventory_hostname }}'
+    backrefs: true
+  notify: Reboot
