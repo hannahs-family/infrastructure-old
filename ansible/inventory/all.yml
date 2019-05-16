@@ -1,0 +1,44 @@
+---
+all:
+  hosts:
+    bounsweet:
+      ansible_host: 172.16.16.40
+    budew:
+      ansible_host: 172.16.16.41
+    cherubi:
+      ansible_host: 172.16.16.42
+    deerling:
+      ansible_host: 172.16.16.43
+    exeggcute:
+      ansible_host: 172.16.16.44
+    fomantis:
+      ansible_host: 172.16.16.45
+    rotom:
+      ansible_host: 172.16.16.36
+    tapu-bulu:
+      ansible_host: 104.225.220.45
+  children:
+    home:
+      hosts:
+        rotom:
+      children:
+        raspberry_pi:
+          children:
+            k8s_home:
+              hosts:
+                bounsweet:
+                  kubernetes_master: true
+                budew:
+                cherubi:
+                deerling:
+              children:
+                glusterfs:
+                  hosts:
+                    exeggcute:
+                    fomantis:
+    vps:
+      children:
+        k8s:
+          hosts:
+            tapu-bulu:
+              kubernetes_master: true

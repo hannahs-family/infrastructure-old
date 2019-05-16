@@ -1,0 +1,9 @@
+---
+firewalld_rules:
+  port_kubernetes_flannel:
+    port: 8472/udp
+    zone: kubernetes
+    state: enabled
+firewalld_zones:
+  kubernetes:
+    source: 172.16.16.40/29

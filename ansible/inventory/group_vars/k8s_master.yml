@@ -1,0 +1,8 @@
+---
+firewalld_rules:
+  port_k8s_api:
+    port: 6443/tcp
+    zone: kubernetes
+    state: enabled
+kubernetes_role: master
+kubernetes_allow_pods_on_master: true

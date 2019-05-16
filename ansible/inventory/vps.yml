@@ -1,7 +1,0 @@
----
-all:
-  children:
-    vps:
-      hosts:
-        tapu-bulu:
-          ansible_host: 104.225.220.45

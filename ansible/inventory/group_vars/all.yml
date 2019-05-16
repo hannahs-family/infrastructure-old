@@ -1,6 +1,8 @@
 ---
 ansible_user: ansible
-firewalld_allowed_ports:
-  node_exporter: "{{ node_exporter_port }}/tcp"
+firewalld_rules:
+  port_node_exporter:
+    port: "{{ node_exporter_port }}/tcp"
+    state: enabled
 node_exporter_port: 9100
 node_exporter_web_listen_address: 0.0.0.0:{{ node_exporter_port }}

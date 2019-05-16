@@ -1,5 +1,0 @@
----
-firewalld_allowed_ports:
-  k8s_master: 6443/tcp
-kubernetes_role: master
-kubernetes_allow_pods_on_master: true
