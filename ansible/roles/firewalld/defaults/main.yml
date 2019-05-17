@@ -1,5 +1,7 @@
 ---
-firewalld_allowed_ports: {}
-firewalld_allowed_services:
-  ssh: ssh
+firewalld_rules:
+  service_ssh:
+    service: ssh
+    state: enabled
 firewalld_direct_rules: {}
+firewalld_zones: {}

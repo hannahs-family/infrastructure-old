@@ -5,22 +5,14 @@
     name: firewalld
     state: present
 
-- name: Allow connections over specified ports
-  become: true
-  firewalld:
-    port: "{{ item.value }}"
-    state: enabled
-    permanent: true
-  loop: "{{ firewalld_allowed_ports | dict2items }}"
-  notify: Reload firewalld
+- include_tasks: zones.yml
 
-- name: Allow connections to specified services
+- name: Configure firewalld rules
   become: true
   firewalld:
-    service: "{{ item.value }}"
-    state: enabled
     permanent: true
-  loop: "{{ firewalld_allowed_services | dict2items }}"
+  args: "{{ item.value | from_yaml }}"
+  loop: "{{ firewalld_rules | dict2items }}"
   notify: Reload firewalld
 
 - name: Get initial checksum of firewalld direct.xml
@@ -43,7 +35,7 @@
     path: /etc/firewalld/direct.xml
     get_checksum: true
   register: direct_checksum_after
-  changed_when: "(not direct_checksum_before.stat.exists) or (direct_checksum_before.stat.checksum != direct_checksum_after.stat.checksum)"
+  changed_when: "(direct_checksum_after.stat.exists and not direct_checksum_before.stat.exists) or (direct_checksum_after.stat.exists and direct_checksum_before.stat.checksum != direct_checksum_after.stat.checksum)"
   notify: Reload firewalld
 
 - name: Enable firewalld

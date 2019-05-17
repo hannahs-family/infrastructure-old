@@ -1,0 +1,23 @@
+---
+- name: Create zones
+  become: true
+  firewalld:
+    zone: "{{ item.key }}"
+    state: present
+    permanent: true
+  loop: "{{ firewalld_zones | dict2items }}"
+  notify: Reload firewalld
+
+- meta: flush_handlers
+
+- name: Configure zones
+  become: true
+  firewalld:
+    zone: "{{ item.key }}"
+    state: enabled
+    permanent: true
+  args: "{{ item.value | from_yaml }}"
+  loop: "{{ firewalld_zones | dict2items }}"
+  notify: Reload firewalld
+
+- meta: flush_handlers
