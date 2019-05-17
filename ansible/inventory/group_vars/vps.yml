@@ -1,2 +1,3 @@
 ---
 dns_base_domain: hannahs.family
+reboot_timeout: 1200
