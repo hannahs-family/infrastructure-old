@@ -1,0 +1,10 @@
+---
+- name: Update system
+  yum:
+    name: "*"
+    state: latest
+    update_cache: true
+
+- name: Autoremove
+  yum:
+    autoremove: true

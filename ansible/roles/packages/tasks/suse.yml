@@ -1,0 +1,6 @@
+---
+- name: Update system
+  zypper:
+    name: "*"
+    refresh: true
+    state: latest

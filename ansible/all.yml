@@ -8,6 +8,7 @@
   roles:
     - group_by
     - hostname
+    - packages
     - user
     - ca
     - cloudalchemy.node-exporter

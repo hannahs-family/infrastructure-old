@@ -1,0 +1,13 @@
+---
+- name: Install aptitude
+  apt:
+    name: aptitude
+
+- name: Update system
+  apt:
+    autoclean: true
+    autoremove: true
+    purge: true
+    install_recommends: false
+    update_cache: true
+    upgrade: safe
