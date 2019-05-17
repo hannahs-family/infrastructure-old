@@ -1,4 +1,5 @@
 ---
+dns_base_domain: home.hannahs.family
 firewalld_rules:
   service_ssh:
     service: ssh

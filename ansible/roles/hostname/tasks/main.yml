@@ -3,12 +3,12 @@
 # - name: Set hostname
 #   become: true
 #   hostname:
-#     name: "{{ inventory_hostname }}.{{ hostname_domain }}"
+#     name: "{{ inventory_hostname }}.{{ dns_base_domain }}"
 
 - name: Set hostname with hostnamectl
   become: true
-  command: hostnamectl set-hostname {{ inventory_hostname }}.{{ hostname_domain }}
-  when: ansible_facts["fqdn"] != inventory_hostname + "." + hostname_domain
+  command: hostnamectl set-hostname {{ inventory_hostname }}.{{ dns_base_domain }}
+  when: ansible_facts["fqdn"] != inventory_hostname + "." + dns_base_domain
   notify: Reboot
 
 - name: Set contents of /etc/hostname
@@ -25,18 +25,16 @@
   become: true
   lineinfile:
     path: /etc/hosts
-    regexp: '^(127\.0\.0\.1.+)$'
-    line: '\1 {{ inventory_hostname }}'
-    backrefs: true
+    regexp: '127.0.0.1.+# Ansible hostname$'
+    line: "127.0.0.1 {{ inventory_hostname }} {{ inventory_hostname }}.{{ dns_base_domain }} # Ansible hostname"
   notify: Reboot
 
 - name: Set IPv6 hostname entry in /etc/hosts
   become: true
   lineinfile:
     path: /etc/hosts
-    regexp: '^(::1.+)$'
-    line: '\1 {{ inventory_hostname }}'
-    backrefs: true
+    regexp: '::1.+# Ansible hostname$'
+    line: "::1 {{ inventory_hostname }} {{ inventory_hostname }}.{{ dns_base_domain }} # Ansible hostname"
   notify: Reboot
 
 - name: Test for cloud-init config file
@@ -52,4 +50,5 @@
     owner: root
     group: root
     mode: 0644
+  when: cloud_init.stat.exists
   notify: Reboot
