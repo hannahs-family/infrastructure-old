@@ -30,12 +30,9 @@
 
 - name: Copy ansible remote user SSH public key
   become: true
-  copy:
-    src: ansible.id_rsa.pub
-    dest: "{{ user.home }}/.ssh/authorized_keys"
-    owner: ansible
-    group: ansible
-    mode: 0644
+  authorized_key:
+      user: ansible
+      key: "{{ lookup('file', 'files/ansible.id_rsa.pub') }}"
 
 - name: Add ansible remote user sudoers configuration
   become: true
