@@ -25,7 +25,7 @@
   become: true
   lineinfile:
     path: /etc/hosts
-    regexp: '127.0.0.1.+# Ansible hostname$'
+    regexp: '^127.0.0.1.+# Ansible hostname$'
     line: "127.0.0.1 {{ inventory_hostname }} {{ inventory_hostname }}.{{ dns_base_domain }} # Ansible hostname"
   notify: Reboot
 
@@ -33,7 +33,7 @@
   become: true
   lineinfile:
     path: /etc/hosts
-    regexp: '::1.+# Ansible hostname$'
+    regexp: '^::1.+# Ansible hostname$'
     line: "::1 {{ inventory_hostname }} {{ inventory_hostname }}.{{ dns_base_domain }} # Ansible hostname"
   notify: Reboot
 
