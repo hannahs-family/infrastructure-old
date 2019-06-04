@@ -20,7 +20,6 @@
     password_lock: true
 
 - name: Create ansible remote user .ssh directory
-  become: true
   file:
     path: "{{ user.home }}/.ssh"
     state: directory
@@ -28,11 +27,28 @@
     group: ansible
     mode: 01700
 
-- name: Copy ansible remote user SSH public key
-  become: true
-  authorized_key:
-      user: ansible
-      key: "{{ lookup('file', 'files/ansible.id_rsa.pub') }}"
+- name: Check for ansible remote user authorized_keys file
+  stat:
+    path: "{{ user.home }}/.ssh/authorized_keys"
+  register: authorized_keys
+
+- name: Add ansible remote user SSH public key to authorized_keys file
+  lineinfile:
+    path: "{{ user.home }}/.ssh/authorized_keys"
+    line: "{{ lookup('file', 'files/ansible.id_rsa.pub') }}"
+    owner: ansible
+    group: ansible
+    mode: 0644
+  when: authorized_keys.stat.exists
+
+- name: Copy ansible remote user SSH authorized_keys file
+  copy:
+    src: ansible.id_rsa.pub
+    dest: "{{ user.home }}/.ssh/authorized_keys"
+    owner: ansible
+    group: ansible
+    mode: 0644
+  when: not authorized_keys.stat.exists
 
 - name: Add ansible remote user sudoers configuration
   become: true
