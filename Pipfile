@@ -10,6 +10,7 @@ yapf = "*"
 ansible = "*"
 passlib = "*"
 jmespath = "*"
+click = "*"
 
 [requires]
 python_version = "3.7"

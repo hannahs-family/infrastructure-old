@@ -24,7 +24,7 @@
 
 3.  Install Ansible dependencies:
 
-        ansible-galaxy install -r ansible/requirements.yml
+        ansible-galaxy install -r requirements.yml
 
 ## Running
 
@@ -44,17 +44,13 @@ Given a new host `new_host` at `192.168.1.1` and accessible over SSH as `root`:
 
         brew install https://raw.githubusercontent.com/hannah-family/infrastructure/master/Library/Formula/sshpass.rb
 
-3.  Run the `bootstrap` playbook against the new host:
+3.  Provision the new host with the `--bootstrap` option:
 
-        ansible-playbook -k --limit=new_host ansible/bootstrap.yml
-
-    If you haven't yet manually connected to this host over SSH, `sshpass` will
-    complain about host key checking being enabled. Fix this by prepending
-    `ANSIBLE_HOST_KEY_CHECKING=false` to the `ansible-playbook` command.
+        ./make.py --bootstrap new_host all
 
 ### Applying Playbooks
 
-    ansible-playbook ansible/all.yml
+    ./make.py --help
 
 ## Copyright
 
