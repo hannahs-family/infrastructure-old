@@ -3,7 +3,7 @@
   group_by:
     key: os_family_{{ ansible_facts["os_family"] }}
 
-- name: Include variables for Kubernetes masters
+- name: Include variables for Kubernetes servers
   include_vars:
-    file: k8s_master.yml
-  when: kubernetes_master is defined and kubernetes_master
+    file: k8s_server.yml
+  when: kubernetes_server is defined and kubernetes_server
