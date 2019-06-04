@@ -1,0 +1,39 @@
+---
+- name: Get architecture
+  set_fact:
+    k3s_arch: "{{ k3s_arch_map[ansible_architecture] }}"
+
+- name: Ensure install directory exists
+  become: true
+  file:
+    path: "{{ k3s_install_dir }}"
+    state: directory
+
+- name: Download binary
+  become: true
+  get_url:
+    dest: "{{ k3s_install_dir }}/k3s"
+    url: https://github.com/rancher/k3s/releases/download/{{ k3s_version }}/k3s{{ ("-" + k3s_arch) if not k3s_arch == "amd64" }}
+    checksum: sha256:https://github.com/rancher/k3s/releases/download/{{ k3s_version }}/sha256sum-{{ k3s_arch }}.txt
+    owner: root
+    group: root
+    mode: 0755
+  notify: Restart k3s
+
+- name: Copy killall script
+  become: true
+  template:
+    src: bin/k3s-killall.sh.j2
+    dest: "{{ k3s_install_dir }}/k3s-killall.sh"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Copy uninstall script
+  become: true
+  template:
+    src: bin/k3s-uninstall.sh.j2
+    dest: "{{ k3s_install_dir }}/k3s-uninstall.sh"
+    owner: root
+    group: root
+    mode: 0755

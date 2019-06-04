@@ -1,0 +1,16 @@
+---
+k3s_install_dir: /usr/local/bin
+k3s_manifests_path: null
+k3s_metallb_config: null
+k3s_metrics_enabled: true
+k3s_service_name: k3s
+k3s_systemd_dir: /etc/systemd/system
+k3s_traefik_enabled: true
+k3s_traefik_values:
+  rbac:
+    enabled: true
+  ssl:
+    enabled: true
+k3s_verify_checksum: true
+k3s_version: v0.5.0
+kubernetes_server: false

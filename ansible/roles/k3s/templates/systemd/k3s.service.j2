@@ -1,0 +1,25 @@
+[Unit]
+Description=Lightweight Kubernetes
+Documentation=https://k3s.io
+After=network-online.target
+
+[Service]
+Type={{ "notify" if kubernetes_server else "exec" }}
+EnvironmentFile={{ k3s_systemd_dir }}/{{ k3s_service_name }}.env
+ExecStartPre=-/sbin/modprobe br_netfilter
+ExecStartPre=-/sbin/modprobe overlay
+ExecStart={{ k3s_install_dir }}/k3s \
+    {{ "server --disable-agent" if kubernetes_server else "agent" }} \
+    {{ "--no-deploy servicelb" if kubernetes_server and not k3s_metallb_config is none else "" }} \
+    {{ "--no-deploy traefik" if kubernetes_server and not k3s_traefik_enabled else "" }}
+KillMode=process
+Restart=always
+Delegate=yes
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+TasksMax=infinity
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

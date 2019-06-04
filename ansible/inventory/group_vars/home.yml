@@ -1,10 +1,2 @@
 ---
 dns_base_domain: home.hannahs.family
-firewalld_rules:
-  service_ssh:
-    service: ssh
-    zone: trusted
-    state: enabled
-firewalld_zones:
-  trusted:
-    source: 172.16.0.0/16

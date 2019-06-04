@@ -1,0 +1,32 @@
+#!/bin/sh
+set -x
+[ `id -u` = 0 ] || exec sudo $0 $@
+{{ k3s_install_dir }}/k3s-killall.sh
+if which systemctl; then
+    systemctl disable {{ k3s_service_name }}
+    systemctl reset-failed {{ k3s_service_name }}
+    systemctl daemon-reload
+fi
+if which rc-update; then
+    rc-update delete {{ k3s_service_name }} default
+fi
+rm -f {{ k3s_systemd_dir }}/k3s.service
+rm -f {{ k3s_systemd_dir }}/k3s.env
+remove_uninstall() {
+    rm -f {{ k3s_install_dir }}/k3s-uninstall.sh
+}
+trap remove_uninstall EXIT
+if (ls {{ k3s_systemd_dir }}/k3s*.service || ls /etc/init.d/k3s*) >/dev/null 2>&1; then
+    set +x; echo "Additional k3s services installed, skipping uninstall of k3s"; set -x
+    exit
+fi
+if [ -L {{ k3s_install_dir }}/kubectl ]; then
+    rm -f {{ k3s_install_dir }}/kubectl
+fi
+if [ -L {{ k3s_install_dir }}/crictl ]; then
+    rm -f {{ k3s_install_dir }}/crictl
+fi
+rm -rf /etc/rancher/k3s
+rm -rf /var/lib/rancher/k3s
+rm -f {{ k3s_install_dir }}/k3s
+rm -f {{ k3s_install_dir }}/k3s-killall.sh

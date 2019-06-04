@@ -1,0 +1,39 @@
+---
+- name: Get k3s server address
+  set_fact:
+    k3s_server: "{{ hostvars[groups['k3s_servers'][0]]['ansible_host'] }}"
+  changed_when: false
+
+- name: Get k3s server token
+  become: true
+  command: cat /var/lib/rancher/k3s/server/node-token
+  register: k3s_token
+  delegate_to: "{{ groups['k3s_servers'][0] }}"
+  changed_when: false
+
+- name: Write server and token to service env file
+  become: true
+  lineinfile:
+    path: "{{ k3s_systemd_dir }}/{{ k3s_service_name }}.env"
+    create: true
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+  loop: "{{ env_vars | dict2items }}"
+  vars:
+    env_vars:
+      K3S_URL: https://{{ k3s_server }}:6443
+      K3S_TOKEN: "{{ k3s_token.stdout }}"
+  notify: Restart k3s
+
+- name: Start k3s service
+  become: true
+  service:
+    name: k3s
+    state: started
+
+- name: Wait for node to come online
+  become: true
+  delegate_to: "{{ groups['k3s_servers'][0] }}"
+  shell: "{{ k3s_install_dir }}/k3s kubectl get node | grep {{ inventory_hostname }}"
+  register: result
+  until: result.stdout.find(" Ready ") != -1

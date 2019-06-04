@@ -1,0 +1,31 @@
+---
+- name: Ensure systemd service directory exists
+  become: true
+  file:
+    path: "{{ k3s_systemd_dir }}"
+    state: directory
+
+- name: Create environment file
+  become: true
+  command: touch {{ k3s_systemd_dir }}/{{ k3s_service_name }}.env
+  args:
+    creates: "{{ k3s_systemd_dir }}/{{ k3s_service_name }}.env"
+    warn: false
+
+- name: Copy service file
+  become: true
+  template:
+    src: systemd/k3s.service.j2
+    dest: "{{ k3s_systemd_dir }}/{{ k3s_service_name }}.service"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart k3s
+
+- name: Enable k3s service
+  become: true
+  systemd:
+    name: k3s
+    enabled: true
+    daemon-reload: true
+  notify: Restart k3s

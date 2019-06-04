@@ -1,0 +1,29 @@
+---
+- name: MetalLB
+  when: not k3s_metallb_config is none
+  block:
+    - name: Install MetalLB
+      get_url:
+        url: https://raw.githubusercontent.com/google/metallb/v0.7.3/manifests/metallb.yaml
+        dest: /var/lib/rancher/k3s/server/manifests/
+        owner: root
+        group: root
+        mode: 0600
+
+    - name: Configure MetalLB
+      template:
+        src: manifests/metallb-config.yml.j2
+        dest: /var/lib/rancher/k3s/server/manifests/metallb-config.yaml
+        owner: root
+        group: root
+        mode: 0600
+
+- name: Copy manifests
+  template:
+    src: "{{ item.src }}"
+    dest: /var/lib/rancher/k3s/server/manifests/{{ item.path }}
+    owner: root
+    group: root
+    mode: 0600
+  loop: "{{ lookup('filetree', k3s_manifests_path) }}"
+  when: not (k3s_manifests_path is none) and item.state == "file"

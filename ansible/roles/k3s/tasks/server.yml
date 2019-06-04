@@ -1,0 +1,11 @@
+---
+- name: Start k3s service
+  become: true
+  service:
+    name: k3s
+    state: started
+
+- name: Wait for k3s token to exist
+  become: true
+  wait_for:
+    path: /var/lib/rancher/k3s/server/node-token

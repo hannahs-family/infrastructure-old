@@ -1,0 +1,19 @@
+---
+- include_tasks: install.yml
+- include_tasks: systemd.yml
+
+- name: Group servers and nodes
+  group_by:
+    key: k3s_{{ "servers" if kubernetes_server else "nodes" }}
+
+- include_tasks: server.yml
+  when: kubernetes_server | bool
+
+- include_tasks: nodes.yml
+  when: not (kubernetes_server | bool)
+
+- include_tasks:
+    file: manifests.yml
+    apply:
+      become: true
+  when: kubernetes_server | bool
