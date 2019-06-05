@@ -1,0 +1,76 @@
+---
+apiVersion: k3s.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: traefik-public
+  namespace: kube-system
+spec:
+  chart: stable/traefik
+  valuesContent: |-
+    dashboard:
+      domain: traefik-public.{{ dns_base_domain }}
+      enabled: true
+    kubernetes:
+      labelSelector: realm=public
+    loadBalancerIP: 172.16.1.1
+    metrics:
+      prometheus:
+        enabled: true
+        restrictAccess: true
+    rbac:
+      enabled: true
+    ssl:
+      enabled: true
+---
+apiVersion: k3s.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: traefik-private
+  namespace: kube-system
+spec:
+  chart: stable/traefik
+  valuesContent: |-
+    dashboard:
+      domain: traefik.{{ dns_base_domain }}
+      enabled: true
+    loadBalancerIP: 172.16.21.1
+    metrics:
+      prometheus:
+        enabled: true
+        restrictAccess: true
+    rbac:
+      enabled: true
+    ssl:
+      enabled: true
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: traefik-public-metrics
+  namespace: monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  selector:
+    matchLabels:
+      app: traefik
+      release: traefik-public
+  endpoints:
+    - port: dashboard-http
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: traefik-private-metrics
+  namespace: monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - kube-system
+  selector:
+    matchLabels:
+      app: traefik
+      release: traefik-private
+  endpoints:
+    - port: dashboard-http

@@ -1,0 +1,65 @@
+---
+apiVersion: k3s.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: coredns-public
+  namespace: kube-system
+spec:
+  chart: stable/coredns
+  valuesContent: |-
+    isClusterService: false
+    replicaCount: 1
+    servers:
+      - zones:
+          - zone: .
+            scheme: dns://
+            use_tcp: false
+        port: 53
+        plugins:
+          - name: cache
+            parameters: 30
+          - name: errors
+          - name: health
+          - name: loadbalance
+            parameters: round_robin
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: forward
+            parameters: . tls://1.1.1.1 tls://1.0.0.1
+            configBlock: |-
+              tls_servername cloudflare-dns.com
+              health_check 5s
+    serviceType: LoadBalancer
+    service:
+      loadBalancerIP: 172.16.1.0
+---
+apiVersion: k3s.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: coredns-private
+  namespace: kube-system
+spec:
+  chart: stable/coredns
+  valuesContent: |-
+    isClusterService: false
+    replicaCount: 1
+    servers:
+      - zones:
+          - zone: .
+            scheme: dns://
+            use_tcp: false
+        port: 53
+        plugins:
+          - name: cache
+            parameters: 30
+          - name: errors
+          - name: health
+          - name: loadbalance
+            parameters: round_robin
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: forward
+            parameters: . 172.16.1.0
+    serviceType: LoadBalancer
+    service:
+      loadBalancerIP: 172.16.21.0

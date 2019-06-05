@@ -1,0 +1,55 @@
+---
+apiVersion: k3s.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: prometheus-operator
+  namespace: kube-system
+spec:
+  chart: stable/prometheus-operator
+  targetNamespace: monitoring
+  valuesContent: |-
+    prometheusOperator:
+      createCustomResource: false
+      image:
+        repository: carlosedp/prometheus-operator
+        tag: v0.28.0
+      configmapReloadImage:
+        repository: carlosedp/configmap-reload
+        tag: v0.2.2
+      prometheusConfigReloaderImage:
+        repository: carlosedp/prometheus-config-reloader
+        tag: v0.28.0
+    prometheus:
+      ingress:
+        enabled: true
+        hosts:
+          - prometheus.home.hannahs.family
+      prometheusSpec:
+        image:
+          repository: carlosedp/prometheus
+          tag: v2.9.2
+    alertManager:
+      alertManagerSpec:
+        image:
+          repository: carlosedp/alertmanager
+          tag: v0.16.2
+    grafana:
+      ingress:
+        enabled: true
+        hosts:
+          - grafana.home.hannahs.family
+      initChownData:
+        image:
+          repository: arm64v8/busybox
+      sidecar:
+        image: jbhannah/k8s-sidecar:v0.0.16
+    nodeExporter:
+      enabled: true
+    prometheus-node-exporter:
+      image:
+        repository: carlosedp/node_exporter
+        tag: v0.17.0
+    kube-state-metrics:
+      image:
+        repository: jbhannah/kube-state-metrics
+        tag: v1.6.0
