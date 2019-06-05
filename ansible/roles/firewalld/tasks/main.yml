@@ -5,6 +5,13 @@
     name: firewalld
     state: present
 
+- name: Install python3-firewalld
+  become: true
+  zypper:
+    name: python3-firewall
+    state: present
+  when: ansible_facts["os_family"] == "Suse"
+
 - include_tasks: zones.yml
   when: (firewalld_zones | length) > 0
 
