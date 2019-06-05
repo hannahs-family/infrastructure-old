@@ -1,0 +1,5 @@
+---
+- hosts: os_family_RedHat:os_family_Suse:&vps
+  roles:
+    - firewalld
+    - fail2ban
